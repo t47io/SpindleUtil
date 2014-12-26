@@ -1,4 +1,4 @@
-function print_save_figure(fig, file_name, dir_name, flg)
+function print_save_figure(fig, file_name, dir_name, flg, is_fprintf)
 
 %
 % PRINT_SAVE_FIGURE(fig, file_name, dir_name, flg);
@@ -30,6 +30,7 @@ file_name = strrep(strrep(file_name, '/', ''), ' ', '');
 current_dir = pwd;
 
 if ~exist('dir_name', 'var') || isempty(dir_name); dir_name = 'Figures'; end;
+if ~exist('is_fprintf', 'var') || isempty(is_fprintf); is_fprintf = 1; end;
 if strcmp(dir_name, '/');
     dir_name = '';
 else
@@ -48,7 +49,7 @@ else
   print(fig, '-depsc2', '-loose', '-r300', full_path);
 end
 
-fprintf( ['Created: ', full_path, '\n'] );
+if is_fprintf; fprintf( ['Created: ', full_path, '\n'] ); end;
 
 if ~exist('flg','var') || isempty(flg); flg = 0 ; end;
 if flg == 1;

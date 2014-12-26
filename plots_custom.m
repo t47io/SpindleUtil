@@ -1,39 +1,47 @@
-function [proj_stats] = plots_custom(proj)
-% [proj_stats] = PLTOS_CUSTOM(projData)
+function [vel_all, vel_means, dist_all, dist_sum, life_times] = plots_custom(xCrd, yCrd, dt, ratio_dist, clr_accu)
+% [vel_all, vel_means, dist_all, dist_sum, life_times] = 
+%   PLTOS_CUSTOM(xCoord, yCoord, [deltaT], [microns], [color_accuracy])
 %
 % Plots speed vs. life time distribution, and tracks colored by speed or
 % displacement. 5 figures will be saved as .eps files in Figures/.
 %
 % Input
 % =====
-% projData      projData struct in projData.mat
+% xCoord        x coordinates from projData.xCoord, should be n_tracks
+%               (rows) by n_frames (column).
+% yCoord        y coordinates from projData.yCoord, same as xCoord.
+% deltaT        [optional] time interval between frames, default 5 seconds.
+% microns       [optional] microns per pixel, default 150 um/pixel.
+% color_accuracy[optional] fine dividend of coloring, default 20.
 %
 % Output
 % ======
-% proj_stats    statistics calcluated, includes following fields:
-%   vel_all       speed of each track (rows) at each interval (column).
-%   vel_means     averaged speed of each track.
-%   dist_all      distance of each track (rows) at each interval (column).
-%   dist_sum      total displacement of each track.
-%   life_times    life time span (number of frames) of each track.
+% vel_all       speed of each track (rows) at each interval (column).
+% vel_means     averaged speed of each track.
+% dist_all      distance of each track (rows) at each interval (column).
+% dist_sum      total displacement of each track.
+% life_times    life time span (number of frames) of each track.
 %
 % e.g.
-% plot_customs(projData);
+% plot_customs(projData.xCoord, projData.yCoord, projData.secPerFrame,
+%       projData.pixSizeNm);
 %
 % by T47, Nov 2014
 %
 if nargin == 0; help(mfilename); return; end;
 
-xCrd = proj.xCoord;
-yCrd = proj.yCoord;
-dt = proj.secPerFrame;
-ratio_dist = proj.pixSizeNm;
-clr_accu = 50;
+% check for data size match
+if ~all(size(xCrd) == size(yCrd));
+    fprintf(2, 'ERROR: (x,y) coordinates data matrix size mismatch!\n');
+    return;
+end;
+
+% constants for time interval and microns
+if ~exist('dt', 'var') || isempty(dt); dt = 5; end;
+if ~exist('ratio_dist', 'var') || isempty(ratio_dist); ratio_dist = 150; end;
+if ~exist('clr_accu', 'var') || isempty(clr_accu); clr_accu = 50; end;
 
 [vel_all, vel_means, vel_cutoff, dist_all, dist_sum, life_times, lf_tm_cutoff, n_tracks, n_frames] = calculate_stats(xCrd, yCrd, dt, ratio_dist);
-fprintf('Loaded from projData: (x,y) coordinates of %d tracks in %d frames.\n', n_tracks, n_frames);
-fprintf('Loaded from projData: %d seconds per frame and %d microns per pixel.\n', dt, ratio_dist);
-
 quarter_tag = zeros(n_tracks, 1);
 
 % FIGRUE scatter quarters
@@ -126,12 +134,3 @@ end;
 axis square; xlabel('x coordinate'); ylabel('y coordinate'); set(gca, 'Ydir', 'reverse');
 colorbar; title('Tracks colored by total displacement','fontsize',15,'fontweight','bold');
 print_save_figure(gcf, 'track_color_disp');
-
-proj_stats.vel_all = vel_all;
-proj_stats.vel_means = vel_means;
-proj_stats.dist_all = dist_all;
-proj_stats.dist_sum = dist_sum;
-proj_stats.lifetime = life_times;
-proj_stats.n_frames = n_frames;
-proj_stats.n_tracks = n_tracks;
-

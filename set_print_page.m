@@ -23,7 +23,7 @@ function set_print_page(fig, orient, pos, txt)
 if nargin == 0; help( mfilename ); return; end;
 
 if exist('txt','var'); set(fig, 'Name', txt); end;
-if ~exist('pos','var') || isempty(pos); pos = [0 0 600 800]; end;
+if ~exist('pos','var') || isempty(pos); pos = [0 0 800 600]; end;
 
 set(fig, 'Position', pos);
 set(fig, 'PaperPositionMode', 'Manual', 'Color', 'White');
