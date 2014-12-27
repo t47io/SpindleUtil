@@ -1,6 +1,7 @@
-function [y1, y2, x1, x2, x0] = spindle_draw_box(im_input, rot_angle)
+function [y1, y2, x1, x2, x0, rot_angle, is_pass] = spindle_draw_box(im_input, rot_angle)
 
 is_finish = 0;
+is_pass = false;
 [x1, x2, y1, y2, x0] = deal(0, 0, 0, 0, 0);
 is_status = 0;
 update_display = 1;
@@ -63,17 +64,50 @@ while ~is_finish
         update_plot = 1;
     else
         keychar = get(gcf,'CurrentCharacter');
+        if double( keychar ) == 28; keychar = 'w'; end; % left arrow
+        if double( keychar ) == 29; keychar = 's'; end; % right arrow
+        if double( keychar ) == 30; keychar = 'a'; end; % up arrow
+        if double( keychar ) == 31; keychar = 'd'; end; % down arrow
+        
         switch keychar
             case {'q','Q'}
-                set(gcf, 'closerequestfcn', 'closereq');
                 is_finish = 1;
+                set(gcf, 'closerequestfcn', 'closereq');
                 set(h, 'String', 'Done!','fontsize',16,'fontweight','bold','color','m');
                 set(gcf, 'pointer','arrow');
-            case {'r', 'R'}
+            case {'w','W'}
+                rot_angle = rot_angle + 5;
                 update_display = 1;
-                update_plot = 0;
+            case {'s','S'}
+                rot_angle = rot_angle - 5;
+                update_display = 1;
+            case {'a','A'}
+                rot_angle = rot_angle + 1;
+                update_display = 1;
+            case {'d','D'}
+                rot_angle = rot_angle - 1;
+                update_display = 1;
+            case {'r','R'}
+                rot_angle = 0;
                 [x1, x2, y1, y2, x0] = deal(0, 0, 0, 0, 0);
                 is_status = 0;
+                update_plot = 0;
+                update_display = 1;
+            case {'p','P'}
+                rot_angle = 0;
+                [x1, x2, y1, y2, x0] = deal(0, 0, 0, 0, 0);
+                is_pass = true;
+                is_finish = 1;
+                set(gcf, 'closerequestfcn', 'closereq');
+                set(h, 'String', 'Ignored!','fontsize',16,'fontweight','bold','color','m');
+                set(gcf, 'pointer','arrow');
+            case {'x','X'}
+                spindle_window_clear();
+                fprintf('\n');
+                error('Aborted: user chose to terminate. Data not saved.');
+            otherwise
+                update_display = 0;
+                update_plot = 0;
         end;
     end;
 end;
@@ -85,13 +119,16 @@ clf;
 imshow(imrotate(im_input, rot_angle, 'crop'));
 hold on; axis image;
 ylim = get(gca,'YLim');
-xlim = get(gca,'XLim');
-title('{\bf{Step 2}}: Draw box to encompass full spindle ().','fontsize',16);
-h = text(xlim(1), ylim(2)+20, ['{\fontsize{16}{\bf{ Lines: }}',...
-    '{\color{magenta}\bf{1 / 2}}: horizontal (top / bottom boundary)', ...
-    ';    {\color{cyan}\bf{3 / 4}}: vertical (left / right boundary) ;', char(10),...
-    '              {\color{yellow}\bf{5}}: vertical (linescan center)', ...
-    ';   {\color{orange}\bf{r}}: reset',...
-    ';   {\color{green}\bf{q}}: save & quit}']);
-
-
+text(10, 20, ['First rotate image to where poles are aligned vertically (north-south).',char(10),...
+    'then draw box to encompass full spindle (two horizontal, two vertical, one vertical center line).'],...
+    'fontsize',14,'fontweight','bold','color','w');
+h = text(0, ylim(2)+20, ['{\fontsize{14}{\bf{Keys: }}',...
+    '{\color{blue}\bf{up/left}}: counterclockwise 1', char(176), '/5', char(176),...
+    '; {\color{red}\bf{down/right}}: clockwise 1', char(176), '/5', char(176),...
+    '; {\color{orange}\bf{r}}: reset; {\color[rgb]{0.5,0,0}\bf{p}}: pass',...
+    '; {\color[rgb]{0,0.5,0}\bf{q}}: save & next; {\color[rgb]{0.5,0,0.5}\bf{x}}: abort. }', char(10), ...
+    '{\fontsize{14}{\bf{Lines: }}',...
+    '{\color{magenta}\bf{1/2}}: horizontal (top / bottom boundary)', ...
+    '; {\color{cyan}\bf{3/4}}: vertical (left / right boundary)',...
+    '; {\color[rgb]{0,0.5,0.5}\bf{5}}: vertical (linescan center).}']);
+text(10, ylim(2)-20, ['Rotation:', '\bf{',num2str(rot_angle),char(176),'}'],'fontsize',14,'color','w');

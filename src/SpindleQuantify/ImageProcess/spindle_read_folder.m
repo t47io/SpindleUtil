@@ -1,7 +1,7 @@
 function spd_data = spindle_read_folder(dir_name)
 
-if ~exist(dir_name, 'dir'); 
-    fprintf(2, 'ERROR: directory not found.\n'); 
+if ~exist(dir_name, 'dir');
+    fprintf(2, 'ERROR: directory not found.\n');
     return;
 end;
 
@@ -12,12 +12,29 @@ for i = 1:length(TIFF_list_all);
         TIFF_list = [TIFF_list, TIFF_list_all(i).name];
     end;
 end;
+fprintf('Load files from directory: %s\n', dir_name);
 
 if mod(length(TIFF_list), 3);
     fprintf(2, 'ERROR: TIFF images sets (of 3) incomplete.\n');
     fprintf(2, '       %d non-thumb TIF files present.\n', length(TIFF_list));
     return;
 end;
+fprintf('Load %d non-thumb TIF images from directory.\n', length(TIFF_list));
+fprintf('Group into %d spindles {DAPI, FITC, TexRd}.\n\n', length(TIFF_list)/3);
+
+
+fprintf(2,'<strong>Instructions</strong>:\n');
+fprintf(['First rotate image to where poles are aligned vertically (north-south),\n'...
+    'then draw box to encompass full spindle \n\t(two horizontal, two vertical, one vertical center line).\n']);
+fprintf(2,'<strong>Controls</strong>:\n');
+fprintf(['Keys: <strong>up/left</strong>: counterclockwise 1', char(176), '/5', char(176),...
+    '; <strong>down/right</strong>: clockwise 1', char(176), '/5', char(176),...
+    ';\n      <strong>r</strong>: reset; <strong>p</strong>: pass; <strong>q</strong>: save & next',...
+    ';\n      <strong>x</strong>: abort (premature terminate, data lost).\n', ...
+    'Lines: <strong>1/2</strong>: horizontal (top / bottom boundary)', ...
+    ';\n       <strong>3/4</strong>: vertical (left / right boundary)',...
+    ';\n       <strong>5</strong>: vertical (linescan center).\n\n']);
+
 
 spd_data = cell(1, length(TIFF_list)/3);
 for i = 1:3:length(TIFF_list);
@@ -27,8 +44,16 @@ for i = 1:3:length(TIFF_list);
         fprintf(2, '       %s/%s\n', dir_name, TIFF_list{i});
         return;
     end;
-    fprintf('[%d/%d] Processing: %s *3.TIF, ...', (i-1)/3+1, length(TIFF_list)/3, file_id);
+    fprintf('[<strong>%d</strong> of %d] Processing: %s *3.TIF, ...', (i-1)/3+1, length(TIFF_list)/3, file_id);
     spd_data{(i-1)/3+1} = spindle_box_select([dir_name, '/', file_id]);
     close all;
-    fprintf(' Done!\n');
+    
+    if spd_data{(i-1)/3+1}.is_bad;
+        fprintf(' Considered ');
+        fprintf(2, 'BAD ');
+        fprintf(', ignored!\n');
+    else
+        fprintf(' Done!\n');
+    end;
 end;
+fprintf('All done.\n');
