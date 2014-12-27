@@ -1,6 +1,6 @@
 function spd_data = spindle_analysis_sheet(file_name, sheet_name)
 
-spd_data = spindle_load(file_name, sheet_name);
+spd_data = spindle_load_XLS(file_name, sheet_name);
 close all;
 spd_data = spindle_match(spd_data);
 close all;

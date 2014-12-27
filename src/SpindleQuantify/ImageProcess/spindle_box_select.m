@@ -9,6 +9,14 @@ close all;
 
 [y1, y2, x1, x2, x0] = spindle_draw_box(im_display, rot_angle);
 close all;
+
+while any([y1, y2, x1, x2, x0] == 0);
+    fprintf(2, 'ERROR: box selection incomplete.\n');
+    fprintf('       Please try again.\n');
+    [y1, y2, x1, x2, x0] = spindle_draw_box(im_display, rot_angle);
+    close all;
+end;
+
 [data_box, data_line] = spindle_quantitate(im_input, rot_angle, [y1, y2, x1, x2, x0]);
 
 spd_data.raw_file = file_id;
