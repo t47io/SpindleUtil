@@ -1,4 +1,11 @@
-function [y1, y2, x1, x2, x0, rot_angle, is_pass] = spindle_draw_box(im_input, rot_angle)
+function [y1, y2, x1, x2, x0, rot_angle, is_pass] = spindle_draw_box(im_input, rot_angle, file_id, CEN_LINE_OFFSET, POLE_PORTION)
+
+if ~exist('CEN_LINE_OFFSET','var') || isempty(CEN_LINE_OFFSET);
+    CEN_LINE_OFFSET = 5;
+end;
+if ~exist('POLE_PORTION','var') || isempty(POLE_PORTION);
+    POLE_PORTION = 1/24;
+end;
 
 is_finish = 0;
 is_pass = false;
@@ -8,33 +15,47 @@ update_display = 1;
 update_plot = 0;
 
 figure(); set_print_page(gcf, 0);
+if exist('file_id','var') && ~isempty(file_id);
+    set(gcf, 'name', file_id);
+end;
 set(gcf, 'closerequestfcn', '');
 set(gcf, 'pointer','fullcross');
+screen_size = get(0,'ScreenSize');
+set(gcf, 'position', [(screen_size(3)-800)/2 screen_size(4)-600 800 600]);
 
 while ~is_finish
     if update_display;
         h = show_img(im_input, rot_angle);
     end;
     if update_plot;
+        ylim = get(gca,'YLim');
         if x1;
             plot([x1, x1], get(gca,'YLim'), 'c', 'linewidth', 2);
-            text(x1+10, 20, ['X1 = ', num2str(x1)], 'color', 'w');
+            text(x1-50, ylim(2)-20, ['X1 = ', num2str(x1)], 'color', 'w');
         end;
         if x2;
             plot([x2, x2], get(gca,'YLim'), 'c', 'linewidth', 2);
-            text(x2+10, 20, ['X2 = ', num2str(x2)], 'color', 'w');
+            text(x2+10, ylim(2)-20, ['X2 = ', num2str(x2)], 'color', 'w');
         end;
         if x0;
             plot([x0, x0], get(gca,'YLim'), 'y', 'linewidth', 2);
-            text(x0+10, 20, ['X0 = ', num2str(x0)], 'color', 'w');
+            text(x0+10, ylim(2)-20, ['X0 = ', num2str(x0)], 'color', 'w');
+
+            plot([x0-CEN_LINE_OFFSET, x0-CEN_LINE_OFFSET], get(gca,'YLim'), 'w:');
+            plot([x0+CEN_LINE_OFFSET, x0+CEN_LINE_OFFSET], get(gca,'YLim'), 'w:');
         end;
         if y1;
             plot(get(gca,'XLim'), [y1, y1], 'm', 'linewidth', 2);
-            text(20, y1+10, ['Y1 = ', num2str(y1)], 'color', 'w');
+            text(20, y1-10, ['Y1 = ', num2str(y1)], 'color', 'w');
         end;
         if y2;
             plot(get(gca,'XLim'), [y2, y2], 'm', 'linewidth', 2);
             text(20, y2+10, ['Y2 = ', num2str(y2)], 'color', 'w');
+            
+            y_pole_N = (y2 - y1) * POLE_PORTION + y1;
+            y_pole_S = y2 - (y2 - y1) * POLE_PORTION;
+            plot(get(gca,'XLim'), [y_pole_N, y_pole_N], 'm:');
+            plot(get(gca,'XLim'), [y_pole_S, y_pole_S], 'm:');
         end;
     end;
     
@@ -126,9 +147,9 @@ h = text(0, ylim(2)+20, ['{\fontsize{14}{\bf{Keys: }}',...
     '{\color{blue}\bf{up/left}}: counterclockwise 1', char(176), '/5', char(176),...
     '; {\color{red}\bf{down/right}}: clockwise 1', char(176), '/5', char(176),...
     '; {\color{orange}\bf{r}}: reset; {\color[rgb]{0.5,0,0}\bf{p}}: pass',...
-    '; {\color[rgb]{0,0.5,0}\bf{q}}: save & next; {\color[rgb]{0.5,0,0.5}\bf{x}}: abort. }', char(10), ...
+    '; {\color[rgb]{0,0.8,0}\bf{q}}: save & next; {\color[rgb]{0.5,0,0.5}\bf{x}}: abort. }', char(10), ...
     '{\fontsize{14}{\bf{Lines: }}',...
     '{\color{magenta}\bf{1/2}}: horizontal (top / bottom boundary)', ...
     '; {\color{cyan}\bf{3/4}}: vertical (left / right boundary)',...
     '; {\color[rgb]{0,0.5,0.5}\bf{5}}: vertical (linescan center).}']);
-text(10, ylim(2)-20, ['Rotation:', '\bf{',num2str(rot_angle),char(176),'}'],'fontsize',14,'color','w');
+text(10, ylim(2)-20, ['Rotation:', '\bf{',num2str(rot_angle),char(176),'}'],'fontsize',14,'color','c');

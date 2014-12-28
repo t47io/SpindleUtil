@@ -1,4 +1,4 @@
-function spindle_analysis (file_name)
+function spindle_excel_analysis (file_name)
 
 % get all sheets
 [~, sheets] = xlsfinfo(file_name);
@@ -26,7 +26,7 @@ for i = 1:length(sheets);
     fprintf('\n');
     sheet_name = sheets{i};
     fprintf('Sheet <strong>%s</strong>:\n', sheet_name);
-    spd_data = spindle_analysis_sheet(file_name, sheet_name);
+    spd_data = spindle_excel_analysis_sheet(file_name, sheet_name);
     spd_all{length(spd_all) + 1} = spd_data;
     fprintf('\n');
 end;
@@ -37,20 +37,11 @@ evalin('base', 'save([file_name(1:strfind(file_name, ''.'')),''mat'']);');
 
 % clean up log file
 diary off;
-f = fopen([file_name(1:strfind(file_name, '.')),'log'], 'r');
-lines = textscan(f, '%s', 'Delimiter', '');
-lines = strrep(strrep(lines{1}, '<strong>',''), '</strong>','');
-fclose(f);
-f = fopen([file_name(1:strfind(file_name, '.')),'log'], 'w');
-for i = 1:length(lines);
-    fprintf(f, '%s\n', lines{i});
-end;
-fclose(f);
-
+log_cleanup([file_name(1:strfind(file_name, '.')),'log']);
 toc;
 
 
 % compare sheets
-spindle_plot_ratio_compare(spd_all);
+spindle_excel_plot_ratio_compare(spd_all);
 close all;
 

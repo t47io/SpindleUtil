@@ -1,4 +1,4 @@
-function spindle_plot(spd_data)
+function spindle_excel_plot(spd_data)
 
 str_dir = strcat('fig_', spd_data.expCondition);
 fprintf('Saved figures to folder: /%s.\n', str_dir);

@@ -1,4 +1,4 @@
-function spd_data = spindle_match(spd_data)
+function spd_data = spindle_excel_match(spd_data)
 
 spd_data.data = {};
 n_repeat = 0;

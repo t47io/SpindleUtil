@@ -1,4 +1,4 @@
-function spd_data = spindle_load_XLS(file_name, sheet_name)
+function spd_data = spindle_excel_load(file_name, sheet_name)
 
 % use xlsread to load xls file
 [~, ~, raw_data] = xlsread(file_name, sheet_name);

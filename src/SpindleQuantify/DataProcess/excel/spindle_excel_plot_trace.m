@@ -1,4 +1,4 @@
-function spindle_plot_trace(spd_data, flag, selec)
+function spindle_excel_plot_trace(spd_data, flag, selec)
 
 % flag = 1 for scaled x-axis
 if flag;
@@ -12,7 +12,7 @@ ylabel('Fluorescence Intensity (a.u.)');
 str_legend = {};
 clr_map = jet(length(spd_data.list_aligned));
 for i = 1:length(spd_data.list_aligned);
-    idx = spindle_find_ID(spd_data, spd_data.list_aligned(i));
+    idx = spindle_excel_find_ID(spd_data, spd_data.list_aligned(i));
     if flag;
         
         % selec = 1 for FITC

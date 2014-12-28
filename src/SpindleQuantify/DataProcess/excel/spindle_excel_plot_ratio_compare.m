@@ -1,4 +1,4 @@
-function spindle_plot_ratio_compare(spd_all)
+function spindle_excel_plot_ratio_compare(spd_all)
 
 for i = 1:length(spd_all) - 1;
     for j = i + 1:length(spd_all);

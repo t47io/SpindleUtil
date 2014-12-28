@@ -1,4 +1,4 @@
-function spindle_plot_ratio(spd_data, flag)
+function spindle_excel_plot_ratio(spd_data, flag)
 
 % flag = 1 for scaled x-axis
 if flag;
@@ -12,7 +12,7 @@ ylabel('Ratio (I_M_C_A_K / I_M_T)');
 str_legend = {};
 clr_map = jet(length(spd_data.list_aligned));
 for i = 1:length(spd_data.list_aligned);
-    idx = spindle_find_ID(spd_data, spd_data.list_aligned(i));
+    idx = spindle_excel_find_ID(spd_data, spd_data.list_aligned(i));
     if flag;
         plot(spd_data.data{idx}.x_norm, ...
             spd_data.data{idx}.data_FITC ./ spd_data.data{idx}.data_TexRd, ...

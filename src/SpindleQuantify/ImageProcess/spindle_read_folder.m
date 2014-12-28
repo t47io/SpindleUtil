@@ -1,5 +1,11 @@
-function spd_data = spindle_read_folder(dir_name)
+function spd_data = spindle_read_folder(dir_name, CEN_LINE_OFFSET, POLE_PORTION)
 
+if ~exist('CEN_LINE_OFFSET','var') || isempty(CEN_LINE_OFFSET);
+    CEN_LINE_OFFSET = 5;
+end;
+if ~exist('POLE_PORTION','var') || isempty(POLE_PORTION);
+    POLE_PORTION = 1/24;
+end;
 if ~exist(dir_name, 'dir');
     fprintf(2, 'ERROR: directory not found.\n');
     return;
@@ -45,7 +51,7 @@ for i = 1:3:length(TIFF_list);
         return;
     end;
     fprintf('[<strong>%d</strong> of %d] Processing: %s *3.TIF, ...', (i-1)/3+1, length(TIFF_list)/3, file_id);
-    spd_data{(i-1)/3+1} = spindle_box_select([dir_name, '/', file_id]);
+    spd_data{(i-1)/3+1} = spindle_box_select([dir_name, '/', file_id], CEN_LINE_OFFSET, POLE_PORTION);
     close all;
     
     if spd_data{(i-1)/3+1}.is_bad;
