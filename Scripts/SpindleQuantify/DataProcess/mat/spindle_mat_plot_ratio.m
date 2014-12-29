@@ -50,5 +50,4 @@ xlabel('Inter-Pole Percentage (north -> south)');
 ylabel('FITC/TexRd Ratio');
 title('FITC/TexRd Ratio (Line vs Box)','fontsize',14,'fontweight','bold'); 
 
-dir_name = [dir_name, '_analysis/summary'];
-print_save_figure(gcf, 'ratio', dir_name);
+print_save_figure(gcf, 'ratio', [dir_name, '_analysis']);
