@@ -29,6 +29,8 @@ for i = 1:length(spd_data);
     if ~mod(i, 6); close all; end;
 end;
 close all;
+spindle_mat_display(spd_data, list_good);
+print_save_figure(gcf, 'summary', [dir_name,'_analysis']);
 [spd_data] = spindle_mat_calc_ratio(spd_data, list_good);
 [spd_data, ratio_box_mean, ratio_box_std, ratio_line_mean, ratio_line_std] = spindle_mat_plot_ratio(spd_data, list_good, y_lim, NUM_BIN, '', '', '');
 
@@ -45,7 +47,6 @@ obj_good.ratio_box_mean = ratio_box_mean;
 obj_good.ratio_box_std = ratio_box_std;
 obj_good.ratio_line_mean = ratio_line_mean;
 obj_good.ratio_line_std = ratio_line_std;
-
 clear('i', 'idx', 'ratio_box_mean', 'ratio_box_std', 'ratio_line_mean', 'ratio_line_std');
 
 save([dir_name,'_analysis/save.mat']);
