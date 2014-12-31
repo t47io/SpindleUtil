@@ -87,7 +87,6 @@ while ~is_finish
         update_plot = 1;
     else
         keychar = get(gcf,'CurrentCharacter');
-        double(keychar)
         switch double(keychar)
             case {81, 113} %q/Q
                 is_finish = 1;
@@ -126,18 +125,25 @@ while ~is_finish
                 error('Aborted: user chose to terminate. Data not saved.');
             case 49
                 im_display(:, :, 1) = im_display(:, :, 1) / COLOR_ADJUST;
+                update_display = 1;
             case 50
                 im_display(:, :, 1) = im_display(:, :, 1) * COLOR_ADJUST;
+                update_display = 1;
             case 51
                 im_display(:, :, 2) = im_display(:, :, 2) / COLOR_ADJUST;
+                update_display = 1;
             case 52 
                 im_display(:, :, 2) = im_display(:, :, 2) * COLOR_ADJUST;
+                update_display = 1;
             case 53
                 im_display(:, :, 3) = im_display(:, :, 3) / COLOR_ADJUST;
+                update_display = 1;
             case 54
                 im_display(:, :, 3) = im_display(:, :, 3) * COLOR_ADJUST;
+                update_display = 1;
             case {84, 116} %t/T
                 im_display = im_input;
+                update_display = 1;
             otherwise
                 update_display = 0;
                 update_plot = 0;
@@ -151,6 +157,7 @@ function h = show_img(im_input, rot_angle)
 clf;
 imshow(imrotate(im_input, rot_angle, 'crop'));
 hold on; axis image;
+xlim = get(gca,'XLim');
 ylim = get(gca,'YLim');
 text(10, 20, ['First rotate image to where poles are aligned vertically (north-south).',char(10),...
     'then draw box to encompass full spindle (two horizontal, two vertical, one vertical center line).'],...
@@ -164,6 +171,8 @@ h = text(0, ylim(2)+20, ['{\fontsize{14}{\bf{Keys: }}',...
     '{\color{magenta}\bf{1/2}}: horizontal (top / bottom boundary)', ...
     '; {\color{cyan}\bf{3/4}}: vertical (left / right boundary)',...
     '; {\color[rgb]{0,0.5,0.5}\bf{5}}: vertical (linescan center).}']);
-text(10, ylim(2)-20, ['{\color{cyan}Rotation:', '\bf{',num2str(rot_angle),char(176),'}}          ', ...
-    '{\color{white}Adjust Channel Display: -/+ {\color{red}{\bf{1}}/{\bf{2}}}, {\color{green}{\bf{3}}/{\bf{4}}}, {\color{blue}{\bf{5}}/{\bf{6}}};',...
+text(10, ylim(2)-20, ['{\color{cyan}Rotation:', '\bf{',num2str(rot_angle),char(176),'}}'],'fontsize',14);
+text(xlim(2)-100, ylim(2)-50, ['{\color{white}Adjust Channel',char(10), 'Display: -/+',char(10), ...
+    '{\color{red}{\bf{1}}/{\bf{2}}}, {\color{green}{\bf{3}}/{\bf{4}}}, {\color{blue}{\bf{5}}/{\bf{6}}};',char(10),...
     '{\color{yellow}{\bf{t}}}: reset color.}'],'fontsize',14);
+
