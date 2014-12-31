@@ -1,10 +1,13 @@
-function spindle_mat_analysis(dir_name, CEN_LINE_OFFSET, POLE_PORTION)
+function spindle_mat_analysis(dir_name, CEN_LINE_OFFSET, POLE_PORTION, NUM_BIN)
 
 if ~exist('CEN_LINE_OFFSET','var') || isempty(CEN_LINE_OFFSET);
     CEN_LINE_OFFSET = 5;
 end;
 if ~exist('POLE_PORTION','var') || isempty(POLE_PORTION);
     POLE_PORTION = 1/24;
+end;
+if ~exist('NUM_BIN','var') || isempty(NUM_BIN); 
+    NUM_BIN = 100; 
 end;
 if ~exist(dir_name, 'dir');
     fprintf(2, 'ERROR: directory not found.\n');
@@ -30,7 +33,8 @@ for i = 1:length(spd_data);
     if ~mod(i, 6); close all; end;
 end;
 close all;
-[spd_data, ratio_box_mean, ratio_box_std, ratio_line_mean, ratio_line_std] = spindle_mat_plot_ratio(spd_data, list_good, dir_name);
+[spd_data] = spindle_mat_calc_ratio(spd_data, list_good);
+[spd_data, ratio_box_mean, ratio_box_std, ratio_line_mean, ratio_line_std] = spindle_mat_plot_ratio(spd_data, list_good, NUM_BIN, '', '');
 
 % assignin('base', 'file_name', file_name);
 for i = 1:length(list_good);
@@ -39,7 +43,15 @@ for i = 1:length(list_good);
     spd_data{idx}.ratio_line_100 = spd_data{idx}.ratio_line_100';
     spd_data{idx}.plot_x = spd_data{idx}.plot_x';
 end;
-clear('i', 'idx');
+
+obj_good.list_chosen = list_good;
+obj_good.ratio_box_mean = ratio_box_mean;
+obj_good.ratio_box_std = ratio_box_std;
+obj_good.ratio_line_mean = ratio_line_mean;
+obj_good.ratio_line_std = ratio_line_std;
+
+clear('i', 'idx', 'ratio_box_mean', 'ratio_box_std', 'ratio_line_mean', 'ratio_line_std');
+
 save([dir_name,'_analysis/save.mat']);
 fprintf('Saved workspace file: %s\n', [dir_name,'_analysis/save.mat']);
 
