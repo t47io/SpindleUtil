@@ -39,16 +39,20 @@ fprintf(['Keys: <strong>up/left</strong>: counterclockwise 1', char(176), '/5', 
     ';\n      <strong>x</strong>: abort (premature terminate, data lost).\n', ...
     'Lines: <strong>1/2</strong>: horizontal (top / bottom boundary)', ...
     ';\n       <strong>3/4</strong>: vertical (left / right boundary)',...
-    ';\n       <strong>5</strong>: vertical (linescan center).\n\n']);
+    ';\n       <strong>5</strong>: vertical (linescan center).\n',...
+    'Display: <strong>1/2, 3/4, 5/6</strong> adjust R, G, B intensity', ...
+    ';\n         <strong>t</strong> reset display only.\n\n']);
 
 
 spd_data = cell(1, length(TIFF_list)/3);
 for i = 1:3:length(TIFF_list);
-    file_id = TIFF_list{i}(1:(length(dir_name) + 5));
-    if ~strcmp(file_id(1:length(dir_name)), dir_name);
-        fprintf(2, 'ERROR: TIF and directory name mismatch:\n');
-        fprintf(2, '       %s/%s\n', dir_name, TIFF_list{i});
-        return;
+    for j = 0:2;
+        file_id = TIFF_list{i+j}(1:(length(dir_name) + 5));
+        if ~strcmp(file_id(1:length(dir_name)), dir_name);
+            fprintf(2, 'ERROR: TIF and directory name mismatch:\n');
+            fprintf(2, '       %s/%s\n', dir_name, TIFF_list{i+j});
+            return;
+        end;
     end;
 end;
 for i = 1:3:length(TIFF_list);
