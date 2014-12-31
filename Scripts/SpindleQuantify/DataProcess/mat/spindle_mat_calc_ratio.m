@@ -1,4 +1,4 @@
-function [spd_data] = spindle_mat_calc_ratio(spd_data, list_good)
+function spd_data = spindle_mat_calc_ratio(spd_data, list_good)
 
 for i = 1:length(list_good);
     idx = spindle_mat_find_ID(spd_data, list_good{i});

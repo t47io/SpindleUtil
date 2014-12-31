@@ -13,6 +13,8 @@ is_pass = false;
 is_status = 0;
 update_display = 1;
 update_plot = 0;
+im_display = im_input;
+COLOR_ADJUST = 1.25;
 
 figure(); set_print_page(gcf, 0);
 if exist('file_id','var') && ~isempty(file_id);
@@ -25,7 +27,7 @@ set(gcf, 'position', [(screen_size(3)-800)/2 screen_size(4)-600 800 600]);
 
 while ~is_finish
     if update_display;
-        h = show_img(im_input, rot_angle);
+        h = show_img(im_display, rot_angle);
     end;
     if update_plot;
         ylim = get(gca,'YLim');
@@ -85,36 +87,32 @@ while ~is_finish
         update_plot = 1;
     else
         keychar = get(gcf,'CurrentCharacter');
-        if double( keychar ) == 28; keychar = 'w'; end; % left arrow
-        if double( keychar ) == 29; keychar = 's'; end; % right arrow
-        if double( keychar ) == 30; keychar = 'a'; end; % up arrow
-        if double( keychar ) == 31; keychar = 'd'; end; % down arrow
-        
-        switch keychar
-            case {'q','Q'}
+        double(keychar)
+        switch double(keychar)
+            case {81, 113} %q/Q
                 is_finish = 1;
                 set(gcf, 'closerequestfcn', 'closereq');
                 set(h, 'String', 'Done!','fontsize',16,'fontweight','bold','color','m');
                 set(gcf, 'pointer','arrow');
-            case {'w','W'}
+            case 28
                 rot_angle = rot_angle + 5;
                 update_display = 1;
-            case {'s','S'}
+            case 29
                 rot_angle = rot_angle - 5;
                 update_display = 1;
-            case {'a','A'}
+            case 30
                 rot_angle = rot_angle + 1;
                 update_display = 1;
-            case {'d','D'}
+            case 31
                 rot_angle = rot_angle - 1;
                 update_display = 1;
-            case {'r','R'}
+            case {82, 114} %r/R
                 rot_angle = 0;
                 [x1, x2, y1, y2, x0] = deal(0, 0, 0, 0, 0);
                 is_status = 0;
                 update_plot = 0;
                 update_display = 1;
-            case {'p','P'}
+            case {80, 112} %p/P
                 rot_angle = 0;
                 [x1, x2, y1, y2, x0] = deal(0, 0, 0, 0, 0);
                 is_pass = true;
@@ -122,10 +120,24 @@ while ~is_finish
                 set(gcf, 'closerequestfcn', 'closereq');
                 set(h, 'String', 'Ignored!','fontsize',16,'fontweight','bold','color','m');
                 set(gcf, 'pointer','arrow');
-            case {'x','X'}
+            case {88, 120} %x/X
                 spindle_window_clear();
                 fprintf('\n');
                 error('Aborted: user chose to terminate. Data not saved.');
+            case 49
+                im_display(:, :, 1) = im_display(:, :, 1) / COLOR_ADJUST;
+            case 50
+                im_display(:, :, 1) = im_display(:, :, 1) * COLOR_ADJUST;
+            case 51
+                im_display(:, :, 2) = im_display(:, :, 2) / COLOR_ADJUST;
+            case 52 
+                im_display(:, :, 2) = im_display(:, :, 2) * COLOR_ADJUST;
+            case 53
+                im_display(:, :, 3) = im_display(:, :, 3) / COLOR_ADJUST;
+            case 54
+                im_display(:, :, 3) = im_display(:, :, 3) * COLOR_ADJUST;
+            case {84, 116} %t/T
+                im_display = im_input;
             otherwise
                 update_display = 0;
                 update_plot = 0;
@@ -152,4 +164,6 @@ h = text(0, ylim(2)+20, ['{\fontsize{14}{\bf{Keys: }}',...
     '{\color{magenta}\bf{1/2}}: horizontal (top / bottom boundary)', ...
     '; {\color{cyan}\bf{3/4}}: vertical (left / right boundary)',...
     '; {\color[rgb]{0,0.5,0.5}\bf{5}}: vertical (linescan center).}']);
-text(10, ylim(2)-20, ['Rotation:', '\bf{',num2str(rot_angle),char(176),'}'],'fontsize',14,'color','c');
+text(10, ylim(2)-20, ['{\color{cyan}Rotation:', '\bf{',num2str(rot_angle),char(176),'}}          ', ...
+    '{\color{white}Adjust Channel Display: -/+ {\color{red}{\bf{1}}/{\bf{2}}}, {\color{green}{\bf{3}}/{\bf{4}}}, {\color{blue}{\bf{5}}/{\bf{6}}};',...
+    '{\color{yellow}{\bf{t}}}: reset color.}'],'fontsize',14);
