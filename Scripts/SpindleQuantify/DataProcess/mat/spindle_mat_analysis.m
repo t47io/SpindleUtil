@@ -1,14 +1,10 @@
-function spindle_mat_analysis(dir_name, CEN_LINE_OFFSET, POLE_PORTION, NUM_BIN)
+function spindle_mat_analysis(dir_name, CEN_LINE_OFFSET, POLE_PORTION, y_lim, NUM_BIN)
 
-if ~exist('CEN_LINE_OFFSET','var') || isempty(CEN_LINE_OFFSET);
-    CEN_LINE_OFFSET = 5;
-end;
-if ~exist('POLE_PORTION','var') || isempty(POLE_PORTION);
-    POLE_PORTION = 1/24;
-end;
-if ~exist('NUM_BIN','var') || isempty(NUM_BIN); 
-    NUM_BIN = 100; 
-end;
+if ~exist('CEN_LINE_OFFSET','var') || isempty(CEN_LINE_OFFSET); CEN_LINE_OFFSET = 5; end;
+if ~exist('POLE_PORTION','var') || isempty(POLE_PORTION); POLE_PORTION = 1/24; end;
+if ~exist('y_lim','var') || isempty(y_lim); y_lim = 2.0; end;
+if ~exist('NUM_BIN','var') || isempty(NUM_BIN); NUM_BIN = 100; end;
+
 if ~exist(dir_name, 'dir');
     fprintf(2, 'ERROR: directory not found.\n');
     return;
@@ -34,7 +30,7 @@ for i = 1:length(spd_data);
 end;
 close all;
 [spd_data] = spindle_mat_calc_ratio(spd_data, list_good);
-[spd_data, ratio_box_mean, ratio_box_std, ratio_line_mean, ratio_line_std] = spindle_mat_plot_ratio(spd_data, list_good, NUM_BIN, '', '');
+[spd_data, ratio_box_mean, ratio_box_std, ratio_line_mean, ratio_line_std] = spindle_mat_plot_ratio(spd_data, list_good, y_lim, NUM_BIN, '', '', '');
 
 % assignin('base', 'file_name', file_name);
 for i = 1:length(list_good);

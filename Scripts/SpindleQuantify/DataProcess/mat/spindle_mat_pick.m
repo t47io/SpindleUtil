@@ -1,5 +1,6 @@
-function obj_chosen = spindle_mat_pick(spd_data, NUM_BIN, str_title, file_name)
+function obj_chosen = spindle_mat_pick(spd_data, str_title, file_name, y_lim, NUM_BIN)
 
+if ~exist('y_lim','var') || isempty(y_lim); y_lim = 2.0; end;
 if ~exist('NUM_BIN','var') || isempty(NUM_BIN); NUM_BIN = 100; end;
 if ~exist('str_title','var'); str_title = ''; end;
 if ~exist('file_name','var') || isempty(file_name); file_name = 'ratio_pick'; end;
@@ -17,7 +18,7 @@ for i = 1:length(list_input);
     end;
 end;
     
-[~, ratio_box_mean, ratio_box_std, ratio_line_mean, ratio_line_std] = spindle_mat_plot_ratio(spd_data, list_chosen, NUM_BIN, str_title, file_name);
+[~, ratio_box_mean, ratio_box_std, ratio_line_mean, ratio_line_std] = spindle_mat_plot_ratio(spd_data, list_chosen, y_lim, NUM_BIN, str_title, file_name, './');
 
 obj_chosen.list_chosen = list_chosen;
 obj_chosen.ratio_box_mean = ratio_box_mean;
