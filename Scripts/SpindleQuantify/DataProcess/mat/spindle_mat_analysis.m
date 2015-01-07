@@ -1,7 +1,7 @@
 function spindle_mat_analysis(dir_name, CEN_LINE_OFFSET, POLE_PORTION, y_lim, NUM_BIN)
 
 if ~exist('CEN_LINE_OFFSET','var') || isempty(CEN_LINE_OFFSET); CEN_LINE_OFFSET = 5; end;
-if ~exist('POLE_PORTION','var') || isempty(POLE_PORTION); POLE_PORTION = 1/24; end;
+if ~exist('POLE_PORTION','var') || isempty(POLE_PORTION); POLE_PORTION = 1/10; end;
 if ~exist('y_lim','var') || isempty(y_lim); y_lim = 2.0; end;
 if ~exist('NUM_BIN','var') || isempty(NUM_BIN); NUM_BIN = 100; end;
 

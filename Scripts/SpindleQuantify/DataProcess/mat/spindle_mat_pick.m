@@ -25,3 +25,6 @@ obj_chosen.ratio_box_mean = ratio_box_mean;
 obj_chosen.ratio_box_std = ratio_box_std;
 obj_chosen.ratio_line_mean = ratio_line_mean;
 obj_chosen.ratio_line_std = ratio_line_std;
+
+spindle_mat_display(spd_data, list_chosen);
+print_save_figure(gcf, [file_name, '_summary'], './');

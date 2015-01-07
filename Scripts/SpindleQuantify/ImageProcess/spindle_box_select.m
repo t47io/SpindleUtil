@@ -4,7 +4,7 @@ if ~exist('CEN_LINE_OFFSET','var') || isempty(CEN_LINE_OFFSET);
     CEN_LINE_OFFSET = 5;
 end;
 if ~exist('POLE_PORTION','var') || isempty(POLE_PORTION);
-    POLE_PORTION = 1/24;
+    POLE_PORTION = 1/10;
 end;
 
 im_input = spindle_read_TIFF(file_id);

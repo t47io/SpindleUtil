@@ -16,4 +16,4 @@ end;
 
 figure(); set_print_page(gcf,0);
 boxplot(pole_ratios(:, 2:4), 'label', {'POLE_left', 'BODY', 'POLE_right'});
-title([spd_data{1}.raw_file(1:end-4), ' {\color{red}POLE\_PORTION = 1/', num2str(1/POLE_PORTION),'}'], 'fontsize',14,'fontweight','bold');
+title([spd_data{1}.raw_file(1:end-4), ' {\color{green}POLE\_PORTION = 1/', num2str(1/POLE_PORTION),'}'], 'fontsize',14,'fontweight','bold');
